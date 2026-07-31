@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Register – SmartQPGen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    
+    <style>
+        .college_bg {
+            background: url("{{ url_for('static', filename='assets/college_bg.png') }}") no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="college_bg min-h-screen flex items-center justify-center px-4 py-8">
+
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div class="flex justify-center mb-4" id="college_logo">
+            <img src="{{ url_for('static', filename='assets/logo.jpg') }}" alt="SKIT Logo" class="h-11 w-11"/>
+        </div>
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-8">Create Your Account</h2>
+
+        <form id="register-form" class="space-y-6">
+            <div>
+                <label for="register-email" class="block text-sm font-medium text-gray-700">Email address</label>
+                <input type="email" id="register-email" name="email" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                       placeholder="you@example.com">
+            </div>
+            <div>
+                <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="register-password" name="password" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                       placeholder="********">
+                <p class="mt-2 text-sm text-gray-500">Minimum 6 characters.</p>
+            </div>
+            <div>
+                <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm_password" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                       placeholder="********">
+            </div>
+            <div>
+                <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Register
+                </button>
+            </div>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-gray-600">
+            Already have an account?
+            <a href="#" class="font-medium text-blue-600 hover:text-blue-500" id="login-link">Login here</a>
+        </p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+           apiKey: "AIzaSyDiAUxG3RvPkLh5Pf8qDTF9iVVwyzfnRtY", // Your actual API key will be here
+           authDomain: "smartqpgen-amrutha.firebaseapp.com",
+           projectId: "smartqpgen-amrutha",
+           storageBucket: "smartqpgen-amrutha.appspot.com",
+           messagingSenderId: "123550998980",
+           appId: "1:123550998980:web:94372f79337dca2d5d4491",
+           measurementId: "G-3C9FBNTDY0"// Optional
+       };
+       
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        } else {
+            firebase.app();
+        }
+
+        window.firebaseAuth = firebase.auth();
+        window.firebaseFirestore = firebase.firestore();
+
+        // --- Registration Form Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('register-form');
+            const loginLink = document.getElementById('login-link');
+
+            if (registerForm) {
+                registerForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const email = document.getElementById('register-email').value;
+                    const password = document.getElementById('register-password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+
+                    if (password !== confirmPassword) {
+                        alert('Passwords do not match!');
+                        return;
+                    }
+
+                    if (password.length < 6) {
+                        alert('Password must be at least 6 characters long.');
+                        return;
+                    }
+
+                    console.log('Attempting Firebase registration for:', email);
+
+                    try {
+                        // Use Firebase Auth to create a new user
+                        const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, password);
+                        const user = userCredential.user;
+
+                        console.log('Firebase Registration successful:', user.uid);
+
+                        // Get the Firebase ID token
+                        const idToken = await user.getIdToken();
+                        console.log('Firebase ID Token obtained after registration.');
+
+                        // Now send this ID token to your Flask backend for verification/Firestore update
+                        const backendAuthResponse = await fetch('http://127.0.0.1:5000/authenticate-backend', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ idToken: idToken }),
+                        });
+
+                        const backendAuthData = await backendAuthResponse.json();
+
+                        if (backendAuthResponse.ok) {
+                            console.log('Backend registered user successfully:', backendAuthData);
+                            alert('Registration successful! Welcome to SmartQPGen.');
+                            // Redirect to Dashboard or Login
+                            window.location.href = '/dashboard'; // Or '/login' if you want them to log in after registering
+                        } else {
+                            console.error('Backend registration failed:', backendAuthData.message || 'Unknown error');
+                            alert(`Registration failed: ${backendAuthData.message || 'Please try again.'}`);
+                        }
+
+                    } catch (error) {
+                        console.error('Firebase Registration or Backend Auth Error:', error.code, error.message);
+                        let errorMessage = 'An unknown error occurred during registration.';
+                        if (error.code) {
+                            switch (error.code) {
+                                case 'auth/email-already-in-use':
+                                    errorMessage = 'This email address is already in use.';
+                                    break;
+                                case 'auth/invalid-email':
+                                    errorMessage = 'Please enter a valid email address.';
+                                    break;
+                                case 'auth/weak-password':
+                                    errorMessage = 'The password is too weak. Please choose a stronger one.';
+                                    break;
+                                default:
+                                    errorMessage = `Registration error: ${error.message}`;
+                            }
+                        }
+                        alert(errorMessage);
+                    }
+                });
+            } else {
+                console.error("Register form not found in the DOM.");
+            }
+
+            // Handle navigation for Login link
+            if (loginLink) {
+                loginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Navigating to login page...');
+                    window.location.href = '/login'; // Assuming you'll have a /login route in Flask
+                });
+            }
+        });
+    </script>
+</body>
+</html>

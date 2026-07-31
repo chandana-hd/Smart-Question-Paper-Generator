@@ -1,0 +1,12 @@
+Flask==2.3.3
+Flask-Cors==3.0.10
+python-dotenv==1.0.0
+firebase-admin==6.2.0
+PyJWT==2.8.0
+Flask
+pdfplumber
+python-docx
+pandas # Useful for data handling, though not strictly required for basic parsing here
+werkzeug # For secure_filename, usually included with Flask
+reportlab # For PDF generation
+docx2pdf # Alternative PDF conversion library

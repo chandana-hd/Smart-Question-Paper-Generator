@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Downloaded Papers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-blue-900">📥 Downloaded Papers</h1>
+
+    {% if papers %}
+      <table class="min-w-full bg-white shadow rounded-lg overflow-hidden">
+        <thead class="bg-blue-100">
+          <tr>
+            <th class="text-left py-3 px-4">Filename</th>
+            <th class="text-left py-3 px-4">Date</th>
+            <th class="text-left py-3 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for paper in papers %}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-3 px-4">{{ paper.filename }}</td>
+              <td class="py-3 px-4">{{ paper.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td class="py-3 px-4 space-x-3">
+                <a href="/download/{{ paper.filename }}" class="text-blue-600 hover:underline">Download</a>
+                <a href="/generate?edit_from={{ paper.filename }}" class="text-green-600 hover:underline">Edit</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-gray-600">No papers downloaded yet.</p>
+    {% endif %}
+
+    <a href="/dashboard" class="mt-6 inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">Back to Dashboard</a>
+  </div>
+</body>
+</html>

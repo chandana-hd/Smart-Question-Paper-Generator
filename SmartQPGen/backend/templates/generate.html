@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generate Question Paper</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .form-section { margin-bottom: 30px; }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <h2 class="mb-4">📄 Generate Question Paper</h2>
+
+  <!-- 🔔 Flash Messages -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-warning">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="/generate" enctype="multipart/form-data">
+    <!-- 🗂️ File Upload -->
+    <div class="mb-3 form-section">
+      <label class="form-label">Upload Question Bank (DOCX or PDF)</label>
+      <input type="file" class="form-control" name="file" accept=".docx,.pdf" required>
+    </div>
+
+    <!-- 🎯 Filters -->
+    <div class="row form-section">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Bloom Levels</label>
+        <select class="form-select" name="bloom_levels" multiple required>
+          {% for level in ['L1', 'L2', 'L3', 'L4', 'L5', 'L6'] %}
+          <option value="{{ level }}" {% if form_data and level in form_data.get('bloom_levels', []) %}selected{% endif %}>{{ level }}</option>
+          {% endfor %}
+        </select>
+        <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Modules</label>
+        <select class="form-select" name="modules" multiple required>
+          {% for m in ['1', '2', '3', '4', '5'] %}
+          <option value="{{ m }}" {% if form_data and m in form_data.get('modules', []) %}selected{% endif %}>Module {{ m }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <!-- 🏛 Metadata -->
+    <div class="row form-section">
+      {% for field, label in [
+        ('dept', 'Department'), ('sem', 'Semester / Division'),
+        ('course', 'Course Name'), ('elective', 'Elective'),
+        ('date', 'Exam Date'), ('time', 'Exam Time'),
+        ('code', 'Course Code'), ('max_marks', 'Maximum Marks')
+      ] %}
+      <div class="col-md-6 mb-3">
+        <label class="form-label">{{ label }}</label>
+        <input type="text" class="form-control" name="{{ field }}" value="{{ form_data.get(field, '') }}" required>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- 🚀 Submit -->
+    <div class="text-end">
+      <button type="submit" class="btn btn-primary">🔧 Generate Paper</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

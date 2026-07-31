@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Activity Log</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-blue-900">📊 Activity Log</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-xl font-semibold mb-2">🕓 Uploaded Files</h2>
+        <ul class="list-disc list-inside text-gray-700 space-y-1">
+          {% for f in uploads %}
+            <li>{{ f }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-xl font-semibold mb-2">📝 Generated Papers</h2>
+        <ul class="list-disc list-inside text-gray-700 space-y-1">
+          {% for paper in papers %}
+            <li>{{ paper.filename }} - {{ paper.created_at.strftime('%Y-%m-%d %H:%M') }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <a href="/dashboard" class="mt-6 inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">Back to Dashboard</a>
+  </div>
+</body>
+</html>

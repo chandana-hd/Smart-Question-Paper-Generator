@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-3xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-blue-900">⚙️ Settings</h1>
+
+    <div class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Delete Account</h2>
+      <form action="/delete-account" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+        <p class="text-red-600 mb-4">Warning: This action will permanently delete your account and all associated data.</p>
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded">Delete My Account</button>
+      </form>
+    </div>
+
+    <a href="/dashboard" class="mt-6 inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">Back to Dashboard</a>
+  </div>
+</body>
+</html>

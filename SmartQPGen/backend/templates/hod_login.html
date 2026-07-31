@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOD Login - SmartQPGen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiAUxG3RvPkLh5Pf8qDTF9iVVwyzfnRtY",
+            authDomain: "smartqpgen-amrutha.firebaseapp.com",
+            projectId: "smartqpgen-amrutha",
+            storageBucket: "smartqpgen-amrutha.appspot.com",
+            messagingSenderId: "123550998980",
+            appId: "1:123550998980:web:94372f79337dca2d5d4491",
+            measurementId: "G-3C9FBNTDY0"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('/static/assets/college_bg.png') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-container {
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: block;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hod-badge {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e8ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #7f8c8d;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e8ecef;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .register-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c0392b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c0392b;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: #eafaf1;
+            color: #27ae60;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+            font-size: 0.9rem;
+        }
+
+        .faculty-link {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e8ecef;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .faculty-link a {
+            color: #f39c12;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .faculty-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 25px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="/static/assets/skit_logo.png" alt="College Logo" class="logo">
+            <div class="hod-badge">
+                <i class="fas fa-crown"></i> Head of Department
+            </div>
+        </div>
+
+        <h1>Login to Your Account</h1>
+        <p class="subtitle">Head of Department Access Portal</p>
+
+        <!-- Error/Success Messages -->
+        <div id="message-container" style="display: none;">
+            <div id="message"></div>
+        </div>
+
+        <form id="hod-login-form">
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your HOD email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+
+            <div class="remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember"> Remember me
+                </label>
+                <a href="#" class="forgot-password">Forgot your password?</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="login-btn">
+                <span id="login-btn-text">Sign in</span>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>Or</span>
+        </div>
+
+        <p>Not a member? <a href="/hod-register" class="register-link">Register for an account</a></p>
+
+        <div class="faculty-link">
+            <p>Faculty member? <a href="/login">👨‍🏫 Login as Faculty</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Show message function
+        function showMessage(message, type) {
+            const container = document.getElementById('message-container');
+            const messageDiv = document.getElementById('message');
+
+            container.style.display = 'block';
+            messageDiv.textContent = message;
+
+            // Remove existing classes
+            messageDiv.className = '';
+
+            // Add appropriate classes based on type
+            if (type === 'error') {
+                messageDiv.className = 'error-message';
+            } else if (type === 'success') {
+                messageDiv.className = 'success-message';
+            }
+        }
+
+        // HOD Login Form Handler
+        document.getElementById('hod-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('login-btn');
+            const loginBtnText = document.getElementById('login-btn-text');
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtnText.textContent = 'Logging in...';
+
+            try {
+                console.log('Attempting Firebase login with:', email);
+                
+                // Sign in with Firebase
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                console.log('Firebase login successful, user:', user.uid);
+
+                // Get ID token
+                const idToken = await user.getIdToken();
+                console.log('Got ID token, length:', idToken.length);
+
+                // Verify HOD status with backend
+                console.log('Sending request to /hod_login...');
+                const response = await fetch('/hod_login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ idToken })
+                });
+
+                console.log('Backend response status:', response.status);
+                const data = await response.json();
+                console.log('Backend response data:', data);
+
+                if (response.ok) {
+                    showMessage('Login successful! Redirecting to HOD Dashboard...', 'success');
+
+                    // Store HOD info in localStorage
+                    localStorage.setItem('hodUser', JSON.stringify(data.user));
+
+                    // Redirect to HOD dashboard
+                    setTimeout(() => {
+                        window.location.href = '/hod-dashboard';
+                    }, 1500);
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage(error.message || 'Login failed. Please check your credentials.', 'error');
+            } finally {
+                // Reset button state
+                loginBtn.disabled = false;
+                loginBtnText.textContent = 'Sign in';
+            }
+        });
+
+        // Check if already logged in as HOD (only once on page load)
+        // Removed onAuthStateChanged to prevent infinite redirects
+        // Authentication will be handled by the login form submission
+        
+        // Simple check on page load - only redirect if user is clearly logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there's a stored HOD user and redirect if appropriate
+            const storedUser = localStorage.getItem('hodUser');
+            if (storedUser) {
+                try {
+                    const hodUser = JSON.parse(storedUser);
+                    if (hodUser && hodUser.role === 'hod') {
+                        // Only redirect if we're not already on the dashboard
+                        if (!window.location.pathname.includes('hod-dashboard')) {
+                            window.location.href = '/hod-dashboard';
+                        }
+                    }
+                } catch (error) {
+                    // Invalid stored user, clear it
+                    localStorage.removeItem('hodUser');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

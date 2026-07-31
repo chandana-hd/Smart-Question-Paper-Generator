@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Uploaded Question Banks</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-blue-900">📤 Uploaded Question Banks</h1>
+
+    {% if uploads %}
+      <table class="min-w-full bg-white shadow rounded-lg overflow-hidden">
+        <thead class="bg-blue-100">
+          <tr>
+            <th class="text-left py-3 px-4">Filename</th>
+            <th class="text-left py-3 px-4">Type</th>
+            <th class="text-left py-3 px-4">Uploaded On</th>
+            <th class="text-left py-3 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for file in uploads %}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-3 px-4">{{ file.filename }}</td>
+              <td class="py-3 px-4">{{ file.type }}</td>
+              <td class="py-3 px-4">{{ file.uploaded_on }}</td>
+              <td class="py-3 px-4 space-x-2">
+                <a href="/generate?reparse={{ file.filename }}" class="text-blue-600 hover:underline">Re-parse</a>
+                <a href="/delete-upload/{{ file.filename }}" class="text-red-500 hover:underline">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-gray-600">No question banks uploaded yet.</p>
+    {% endif %}
+
+    <a href="/dashboard" class="mt-6 inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">Back to Dashboard</a>
+  </div>
+</body>
+</html>

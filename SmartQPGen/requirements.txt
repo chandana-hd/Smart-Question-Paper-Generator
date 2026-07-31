@@ -1,0 +1,57 @@
+# Core Flask Dependencies
+Flask==2.3.3
+Flask-CORS==4.0.0
+Werkzeug==2.3.7
+
+# Firebase Dependencies
+firebase-admin==6.2.0
+google-cloud-firestore==2.12.0
+google-auth==2.23.3
+
+# Document Processing
+python-docx==0.8.11
+pdfplumber==0.9.0
+docx2pdf==0.1.8
+
+# Windows COM Support (for PDF conversion)
+pywin32==306
+pythoncom==306
+
+# File Handling
+secure-filename==0.1
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Security & Validation
+bleach==6.0.0
+flask-limiter==3.5.0
+
+# Email Support (Optional)
+smtplib2==0.2.1
+
+# Testing Dependencies (Development)
+pytest==7.4.2
+pytest-cov==4.1.0
+pytest-mock==3.11.1
+
+# Production Server
+gunicorn==21.2.0
+waitress==2.1.2
+
+# Monitoring & Logging (Optional)
+sentry-sdk[flask]==1.32.0
+
+# Development Tools (Optional)
+black==23.9.1
+flake8==6.1.0
+isort==5.12.0
+
+# Additional Utilities
+requests==2.31.0
+uuid==1.30
+datetime==5.2
+traceback2==1.4.0
+re==2.2.1
+os-sys==2.1.4
+json5==0.9.14
